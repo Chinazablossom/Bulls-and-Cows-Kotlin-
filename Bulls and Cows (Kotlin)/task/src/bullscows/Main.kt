@@ -1,60 +1,64 @@
 package bullscows
 
 
-
 fun main() {
+    //a correctly guessed digit is a cow, and if its position is also correct, then it is a bull.
 
+    println("Please, enter the secret code's length:")
     val length = readln().toInt()
-   println(generateSecreteCode(length))
+    if (length > 10) {
+         println("Error: can't generate a secret number with a length of $length because there aren't enough unique digits.")
+        return
+    }
+
+    val secretCode = generateSecreteCode(length)
+    println("Okay, let's start a game!")
+
+    var turn = 1
+
+    do {
+        var cows = 0
+        var bulls = 0
+
+        println("Turn $turn:")
+        try {
+            val userInput = readln().trim()
+            (0..secretCode.lastIndex).forEach {
+                val secretDigit = secretCode[it]
+                val userDigit = userInput[it]
+
+                if (secretCode.contains(userDigit)) {
+                    cows++
+                }
+
+                if (secretDigit == userDigit) {
+                    bulls++
+                    cows--
+                }
+            }
+            turn++
+
+        } catch (e: Exception) {
+            println("Invalid input Please enter a valid amount of numbers\n")
+        }
 
 
+        if (cows == 0 && bulls == 0) println("Grade: None.")
 
-    /*  //a correctly guessed digit is a cow, and if its position is also correct, then it is a bull.
+        if (cows >= 1 && bulls >= 1) println("Grade: ${if (bulls > 1) "$bulls bulls" else "$bulls bull"} and ${if (cows > 1) "$cows cows" else "$cows cow"}.")
 
-      //val secretCode = (1000..9999).random().toString()
-      val secretCode = "9305"
+        if (cows >= 1 && bulls < 1) println("Grade: ${if (cows > 1) "$cows cows" else "$cows cow"}.")
 
-      val userInput = ""
-
-
-      var cows = 0
-      var bulls = 0
-
-      (0..3).forEach {
-          val secretDigit = secretCode[it]
-          val userDigit = userInput[it]
-
-          if (secretCode.contains(userDigit)) {
-              cows++
-          }
-
-          if (secretDigit == userDigit ) {
-              bulls++
-              cows--
-          }
+        if (cows < 1 && bulls >= 1) println("Grade: ${if (bulls > 1) "$bulls bulls" else "$bulls bull"}.${if (bulls == secretCode.length) "\nCongratulations! You guessed the secret code." else ""}")
 
 
-      }
-
-
-      if (cows == 0 && bulls == 0) println("Grade: None. The secret code is $secretCode.")
-
-      if (cows >= 1 && bulls >= 1) println("Grade: $bulls bull(s) and $cows cow(s). The secret code is $secretCode.")
-
-      if (cows >= 1 && bulls < 1) println("Grade: $cows cow(s). The secret code is $secretCode.")
-
-      if (cows < 1 && bulls >= 1) println("Grade: $bulls bull(s). The secret code is $secretCode.")
-  */
+    } while (bulls != secretCode.length)
 
 
 }
 
 
 fun generateSecreteCode(length: Int): String {
-    if (length > 10 ) {
-        return "Error: can't generate a secret number with a length of $length because there aren't enough unique digits."
-    }
-
     val pseudoRandomNumber: String = System.nanoTime().toString().reversed()
     val uniqueDigits = mutableSetOf<Int>()
     var firstDigitFound = false
@@ -62,7 +66,7 @@ fun generateSecreteCode(length: Int): String {
     while (uniqueDigits.size < length) {
         pseudoRandomNumber.forEach {
             if (uniqueDigits.size < length) {
-                if (!firstDigitFound && it != '0' && it.isDigit() ) {
+                if (!firstDigitFound && it != '0' && it.isDigit()) {
                     uniqueDigits.add(it.digitToInt())
                     firstDigitFound = true
                 } else if (firstDigitFound && it.isDigit() && !uniqueDigits.contains(it.digitToInt())) {
@@ -72,6 +76,6 @@ fun generateSecreteCode(length: Int): String {
         }
     }
 
-    return "The random secret number is ${uniqueDigits.joinToString("")}."
+    return uniqueDigits.joinToString("")
 }
 
