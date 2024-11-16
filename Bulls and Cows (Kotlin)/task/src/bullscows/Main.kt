@@ -1,5 +1,7 @@
 package bullscows
 
+import kotlin.random.Random
+
 
 fun main() {
     //a correctly guessed digit is a cow, and if its position is also correct, then it is a bull.
@@ -54,17 +56,16 @@ fun main() {
 
     } while (bulls != secretCode.length)
 
-
 }
 
 
 fun generateSecreteCode(length: Int): String {
-    val pseudoRandomNumber: String = System.nanoTime().toString().reversed()
+    val randomNum = Random.nextInt().toString()
     val uniqueDigits = mutableSetOf<Int>()
     var firstDigitFound = false
 
     while (uniqueDigits.size < length) {
-        pseudoRandomNumber.forEach {
+        randomNum.forEach {
             if (uniqueDigits.size < length) {
                 if (!firstDigitFound && it != '0' && it.isDigit()) {
                     uniqueDigits.add(it.digitToInt())
